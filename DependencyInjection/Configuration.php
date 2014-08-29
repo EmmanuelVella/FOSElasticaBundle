@@ -119,6 +119,16 @@ class Configuration implements ConfigurationInterface
                                         ->end()
                                         ->scalarNode('transport')->end()
                                         ->scalarNode('timeout')->end()
+                                        ->scalarNode('retryOnConflict')->end()
+                                    ->end()
+                                    ->beforeNormalization()
+                                        ->ifTrue(function($v) {return !isset($v['retryOnConflict']) && isset($v['retry_on_conflict']);})
+                                        ->then(function($v) {
+                                            $v['retryOnConflict'] = $v['retry_on_conflict'];
+                                            unset($v['retry_on_conflict']);
+
+                                            return $v;
+                                        })
                                     ->end()
                                 ->end()
                             ->end()
